@@ -1,8 +1,8 @@
 require 'google/apis/sheets_v4'
 require 'googleauth'
-require 'sheet_reader/errors'
+require 'sheet_reader_writer/errors'
 
-class SheetReader
+class SheetReaderWriter
   REQUIRED_ENV_VARS = %w[GOOGLE_CLIENT_EMAIL
                          GOOGLE_ACCOUNT_TYPE
                          GOOGLE_PRIVATE_KEY]
@@ -10,7 +10,7 @@ class SheetReader
   # Creates a new instance to interact with Google Sheets
   #
   # Example:
-  #   >> SheetReader.new("1ukhJwquqRTgfX-G-nxV6AsAH726TOsKQpPJfpqNjWGg").read("Sheet 1")
+  #   >> SheetReaderWriter.new("1ukhJwquqRTgfX-G-nxV6AsAH726TOsKQpPJfpqNjWGg").read("Sheet 1")
   #   => [{"foo"=>"hey", "bar"=>"ho"},
   #       {"foo"=>"let's ", "bar"=>"go"}]
   #
@@ -40,7 +40,7 @@ class SheetReader
   # Fetches the content of a google spreadsheet
   #
   # Example:
-  #   >> sheet_reader.read("Sheet 1")
+  #   >> sheet_reader_writer.read("Sheet 1")
   #   => [{"foo"=>"hey", "bar"=>"ho"},
   #       {"foo"=>"let's ", "bar"=>"go"}]
   #
@@ -57,7 +57,7 @@ class SheetReader
   # Writes the specified content to a google spreadsheet
   #
   # Example:
-  #   >> sheet_reader.write [
+  #   >> sheet_reader_writer.write [
   #        ["foo",   "bar"],
   #        ["hey",    "ho"],
   #        ["let's",   nil],
@@ -82,7 +82,7 @@ class SheetReader
   # Clears a google spreadsheet
   #
   # Example:
-  #   >> sheet_reader.clear
+  #   >> sheet_reader_writer.clear
   #
   def clear(sheet_name = "")
     with_exceptions do

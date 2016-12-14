@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sheet_reader (1.0.0)
+    sheet_reader_writer (1.0.0)
       google-api-client (~> 0.9)
       googleauth (~> 0.5)
 
@@ -66,7 +66,7 @@ DEPENDENCIES
   dotenv
   minitest
   rake
-  sheet_reader!
+  sheet_reader_writer!
 
 BUNDLED WITH
    1.13.6
