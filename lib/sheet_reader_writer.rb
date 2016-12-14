@@ -57,16 +57,15 @@ class SheetReaderWriter
   # Writes the specified content to a google spreadsheet
   #
   # Example:
-  #   >> sheet_reader_writer.write [
-  #        ["foo",   "bar"],
-  #        ["hey",    "ho"],
-  #        ["let's",   nil],
-  #        [nil,      "go"]
-  #      ]
+  #
+  # screen_reader_writer.write [
+  #   {"foo"=>"hey", "bar"=>"ho"},
+  #   {"foo"=>"let's"},
+  #   {"bar"=>"go"}
+  # ]
   #
   # Arguments:
-  #   values: (Array of strings) The values to update where the first row
-  #represent the column names or keys returned by #read
+  #   row_hashes: (Array of hashes) The values to update in the same format as returned by the read method 
   #
   def write(row_hashes, sheet_name = "")
     value_range_object = {

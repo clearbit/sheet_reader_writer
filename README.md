@@ -58,8 +58,8 @@ The format is the same as the one returned by the read method.
 ```ruby
 screen_reader_writer.write [
   {"foo"=>"hey", "bar"=>"ho"},
-  {"foo"=>"let's", "bar"=>nil},
-  {"foo"=>nil, "bar"=>"go"}
+  {"foo"=>"let's"},
+  {"bar"=>"go"}
 ]
 ```
 
