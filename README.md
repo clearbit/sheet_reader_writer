@@ -47,7 +47,7 @@ Notice that empty lines are mapped to `nil`
 By default `sheet_reader_writer` chooses the first sheet of the document. You can specify another sheet by it's name with:
 
 ```ruby
-sheet_reader_writer.read('1Q2NdvsSECbDrdOf9-C1WhzHq__3jWW3lQWDDB0mJbd9', "Some other sheet")
+sheet_reader_writer.read("Some other sheet")
 ```
 
 ### Write
@@ -60,8 +60,7 @@ screen_reader_writer.write [
   ["foo",        "bar"],
   ["hey",         "ho"],
   ["let's",        nil],
-  [nil,           "go"],
-  ["today", today.to_s]
+  [nil,           "go"]
 ]
 ```
 
