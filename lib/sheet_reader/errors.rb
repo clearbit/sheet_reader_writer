@@ -1,4 +1,4 @@
-module SheetReader
+class SheetReader
   class Error < StandardError;
     def backtrace
       return cause.backtrace if cause

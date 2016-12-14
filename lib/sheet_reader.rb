@@ -2,48 +2,112 @@ require 'google/apis/sheets_v4'
 require 'googleauth'
 require 'sheet_reader/errors'
 
-module SheetReader
+class SheetReader
   REQUIRED_ENV_VARS = %w[GOOGLE_CLIENT_EMAIL
                          GOOGLE_ACCOUNT_TYPE
                          GOOGLE_PRIVATE_KEY]
 
-  # Fetches the content of a google spreadsheet
+  # Creates a new instance to interact with Google Sheets
   #
   # Example:
-  #   >> SheetReader.read("1ukhJwquqRTgfX-G-nxV6AsAH726TOsKQpPJfpqNjWGg")
+  #   >> SheetReader.new("1ukhJwquqRTgfX-G-nxV6AsAH726TOsKQpPJfpqNjWGg").read("Sheet 1")
   #   => [{"foo"=>"hey", "bar"=>"ho"},
   #       {"foo"=>"let's ", "bar"=>"go"}]
   #
   # Arguments:
   #   sheet_id: (String) The google sheet identifier.
-  #   sheet_name: (String) The sheet name, by default it's the first one
-
-  def self.read(sheet_id, sheet_name = "")
+  #
+  def initialize(sheet_id, write_permission = true)
     raise MissingEnvVars unless required_env_vars?
     ensure_valid_key_format
 
-    begin
+    with_exceptions do
       sheets = Google::Apis::SheetsV4::SheetsService.new
-      scopes =  ['https://www.googleapis.com/auth/spreadsheets.readonly']
+
+      scopes = if write_permission
+        ['https://www.googleapis.com/auth/spreadsheets']
+      else
+        ['https://www.googleapis.com/auth/spreadsheets.readonly']
+      end
+
       sheets.authorization = Google::Auth.get_application_default(scopes)
-      raw_values = sheets.get_spreadsheet_values(sheet_id, "#{sheet_name}!A:ZZ").values
+
+      @sheet_service = sheets
+      @sheet_id = sheet_id
+    end
+  end
+
+  # Fetches the content of a google spreadsheet
+  #
+  # Example:
+  #   >> sheet_reader.read("Sheet 1")
+  #   => [{"foo"=>"hey", "bar"=>"ho"},
+  #       {"foo"=>"let's ", "bar"=>"go"}]
+  #
+  # Arguments:
+  #   sheet_name: (String) The sheet name, by default it's the first one
+  #
+  def read(sheet_name = "")
+    with_exceptions do
+      raw_values = @sheet_service.get_spreadsheet_values(@sheet_id, "#{sheet_name}!A:ZZ").values
+      rows_as_hashes(raw_values)
+    end
+  end
+
+  # Writes the specified content to a google spreadsheet
+  #
+  # Example:
+  #   >> sheet_reader.write [
+  #        ["foo",   "bar"],
+  #        ["hey",    "ho"],
+  #        ["let's",   nil],
+  #        [nil,      "go"]
+  #      ]
+  #
+  # Arguments:
+  #   values: (Array of strings) The values to update where the first row
+  #represent the column names or keys returned by #read
+  #
+  def write(values, sheet_name = "")
+    value_range_object = {
+      major_dimension: "ROWS",
+      values: values
+    }
+
+    with_exceptions do
+      @sheet_service.update_spreadsheet_value(@sheet_id, "#{sheet_name}!A:ZZ", value_range_object, value_input_option: 'USER_ENTERED')
+    end
+  end
+
+  # Clears a google spreadsheet
+  #
+  # Example:
+  #   >> sheet_reader.clear
+  #
+  def clear(sheet_name = "")
+    with_exceptions do
+      @sheet_service.clear_values(@sheet_id, "#{sheet_name}!A:ZZ")
+    end
+  end
+
+  private
+
+  def with_exceptions
+    begin
+      yield
     rescue Google::Apis::ClientError => e
       raise BadSheetId if e.message =~ /notFound/
       raise Unauthorized if e.message =~ /forbidden/
     rescue
       raise Error
     end
-
-    rows_as_hashes(raw_values)
   end
 
-  private
-
-  def self.ensure_valid_key_format
+  def ensure_valid_key_format
     ENV['GOOGLE_PRIVATE_KEY'] = ENV['GOOGLE_PRIVATE_KEY'].gsub(/\\n/, "\n")
   end
 
-  def self.rows_as_hashes(rows)
+  def rows_as_hashes(rows)
     keys, *rest = rows
 
     rest.map do |row|
@@ -51,7 +115,7 @@ module SheetReader
     end
   end
 
-  def self.convery_empty_cells_to_nil(row)
+  def convery_empty_cells_to_nil(row)
     row.map do |cell|
       if cell.strip == ""
         nil
@@ -61,7 +125,7 @@ module SheetReader
     end
   end
 
-  def self.required_env_vars?
+  def required_env_vars?
     REQUIRED_ENV_VARS.all? do |e|
       ENV.has_key?(e) &&
       ENV.fetch(e) &&
