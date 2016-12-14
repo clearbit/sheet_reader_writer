@@ -17,7 +17,7 @@ class SheetReaderWriter
   # Arguments:
   #   sheet_id: (String) The google sheet identifier.
   #
-  def initialize(sheet_id, write_permission = true)
+  def initialize(sheet_id, write_permission: true)
     raise MissingEnvVars unless required_env_vars?
     ensure_valid_key_format
 
