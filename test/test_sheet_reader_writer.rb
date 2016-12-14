@@ -26,17 +26,16 @@ class SheetReaderWriterTest < Minitest::Test
 
   def test_with_sample_sheet
     # Be sure to run the test with the correct env variables, this is an integration test that requires internet
-    sr = SheetReaderWriter.new('1Q2NdvsSECbDrdOf9-C1EhzHq__3jWW3lQWDDB0mJbd8')
+    sr = SheetReaderWriter.new('1bDmIkemWGk2wQXhzyAbtraIxMEETjn7XGgQjbna7SIY')
 
     sr.clear
 
     today = Date.today
     values = [
-      ["foo",   "bar"],
-      ["hey",    "ho"],
-      ["let's",   nil],
-      [nil,      "go"],
-      ["today", today.to_s]
+      {"foo"=>"hey", "bar"=>"ho"},
+      {"foo"=>"let's", "bar"=>nil},
+      {"foo"=>nil, "bar"=>"go"},
+      {"foo"=>"today", "bar"=>today.to_s}
     ]
 
     sr.write(values)

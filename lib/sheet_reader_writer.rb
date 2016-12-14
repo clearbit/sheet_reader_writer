@@ -68,10 +68,10 @@ class SheetReaderWriter
   #   values: (Array of strings) The values to update where the first row
   #represent the column names or keys returned by #read
   #
-  def write(values, sheet_name = "")
+  def write(row_hashes, sheet_name = "")
     value_range_object = {
       major_dimension: "ROWS",
-      values: values
+      values: to_values_array(row_hashes)
     }
 
     with_exceptions do
@@ -91,6 +91,20 @@ class SheetReaderWriter
   end
 
   private
+
+  def to_values_array(row_hashes)
+    keys = row_hashes.map do |row_hash|
+      row_hash.keys
+    end.flatten.uniq.sort
+
+    values_array = row_hashes.map do |row_hash|
+      keys.map do |key|
+        row_hash[key]
+      end
+    end
+
+    values_array.unshift(keys)
+  end
 
   def with_exceptions
     begin

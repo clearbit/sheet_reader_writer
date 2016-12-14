@@ -53,14 +53,13 @@ sheet_reader_writer.read("Some other sheet")
 ### Write
 
 Substitutes the content of the spreadhseet with the specified values.
-Notice the first row maps to the keys returned in the `read` method.
+The format is the same as the one returned by the read method.
 
 ```ruby
 screen_reader_writer.write [
-  ["foo",        "bar"],
-  ["hey",         "ho"],
-  ["let's",        nil],
-  [nil,           "go"]
+  {"foo"=>"hey", "bar"=>"ho"},
+  {"foo"=>"let's", "bar"=>nil},
+  {"foo"=>nil, "bar"=>"go"}
 ]
 ```
 
