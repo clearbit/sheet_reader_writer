@@ -33,8 +33,8 @@ class SheetReaderWriterTest < Minitest::Test
     today = Date.today
     values = [
       {"foo"=>"hey", "bar"=>"ho"},
-      {"foo"=>"let's", "bar"=>nil},
-      {"foo"=>nil, "bar"=>"go"},
+      {"foo"=>"let's"},
+      {"bar" =>"go"},
       {"foo"=>"today", "bar"=>today.to_s}
     ]
 
@@ -42,7 +42,7 @@ class SheetReaderWriterTest < Minitest::Test
     result = sr.read
     assert_equal [
       {"foo"=>"hey", "bar"=>"ho"},
-      {"foo"=>"let's", "bar"=>nil},
+      {"foo"=>"let's", "bar" => nil},
       {"foo"=>nil, "bar"=>"go"},
       {"foo"=>"today", "bar"=>today.to_s}
     ], result

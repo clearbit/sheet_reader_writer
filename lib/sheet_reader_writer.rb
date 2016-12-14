@@ -91,7 +91,18 @@ class SheetReaderWriter
 
   private
 
+  def stringify_keys(hash)
+    hash.reduce({}) do |hash, (k,v)|
+      hash[k.to_s] = v
+      hash
+    end
+  end
+
   def to_values_array(row_hashes)
+    row_hashes = row_hashes.map do |row_hash|
+      stringify_keys(row_hash)
+    end
+
     keys = row_hashes.map do |row_hash|
       row_hash.keys
     end.flatten.uniq.sort
