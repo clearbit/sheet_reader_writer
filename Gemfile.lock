@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sheet_reader_writer (1.1.4)
+    sheet_reader_writer (1.1.5)
       google-api-client (~> 0.12)
       googleauth (~> 0.5)
 
