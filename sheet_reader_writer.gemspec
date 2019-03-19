@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.authors     = ["Clearbit"]
   s.email       = 'daniel@clearbit.com'
   s.files       = `git ls-files -z lib`.split("\x0")
-  s.homepage    = 'http://github.com/cleabit/sheet_reader_writer'
+  s.homepage    = 'http://github.com/clearbit/sheet_reader_writer'
   s.license     = 'MIT'
   s.add_runtime_dependency 'googleauth', '~> 0.5'
   s.add_runtime_dependency 'google-api-client', '~> 0.12'
